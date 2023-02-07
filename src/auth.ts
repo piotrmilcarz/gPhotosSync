@@ -25,20 +25,19 @@ const getAccessToken = async (tokenPath: string, clientId: string, clientSecret:
     access_type: 'offline',
     scope: scopes.join(' '),
   })
-  const code = await authorize(authUrl)
+  const code = await authorize(authUrl, redirectUri)
   const { tokens } = await oauth2Client.getToken(code)
-  console.log(tokens)
   saveRefreshToken(tokenPath, clientId, clientSecret, tokens.refresh_token as string)
   return Promise.resolve(tokens.access_token as string)
 }
 
-const authorize = (authorizeUrl: string): Promise<string> => {
+const authorize = (authorizeUrl: string, redirectUri: string): Promise<string> => {
   return new Promise((resolve, reject) => {
     const server = http.createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
       try {
         const reqUrl = req.url || ''
         if (reqUrl.indexOf('/oauth2callback') > -1) {
-          const qs = (new url.URL(reqUrl, 'http://localhost:3000')).searchParams
+          const qs = (new url.URL(reqUrl, redirectUri + ':' + webServerPort)).searchParams
           const code = qs.get('code') || ''
           log(`Code is ${code}`)
           res.end('Authentication successful! Please return to the console.')
