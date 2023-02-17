@@ -1,13 +1,16 @@
-let verbocity: number = 0
+class Logger {
+  private verbocity: number = 0
 
-const setVerbosity = (mode: number): void => {
-  verbocity = mode
-}
-
-const log = (...rest: (object | string)[]): void => {
-  if (verbocity > 0) {
-    console.log('DEBUG: ', rest.join("\n"))
+  setVerbosity(mode: number): void {
+    this.verbocity = mode
   }
+
+  log(...rest: (object | string)[]): void {
+    if (this.verbocity > 0) {
+      console.log('DEBUG: ', rest.join("\n"))
+    }
+  }
+
 }
 
-export { log, setVerbosity }
+export default Logger 
