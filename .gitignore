@@ -1,5 +1,7 @@
+coverage
 node_modules
 build
 .vscode
 package-lock.json
 token.json
+jest.config.js.map

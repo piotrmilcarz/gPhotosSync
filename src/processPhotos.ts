@@ -2,10 +2,9 @@
 import Photos from 'googlephotos'
 import fs from 'fs'
 import { https } from 'follow-redirects'
-import { log } from './logger'
+import Logger from './logger'
 
-
-const processPhotos = async (photos: Photos, destination: string, pageSize: number, dryRun: boolean): Promise<number> => {
+const processPhotos = async (photos: Photos, destination: string, pageSize: number, dryRun: boolean, logger: Logger): Promise<number> => {
   let searchListing
   let nextPageToken
   const filters = new photos.Filters()
@@ -39,14 +38,14 @@ const processPhotos = async (photos: Photos, destination: string, pageSize: numb
               file.close()
               const fileDate = new Date(item.mediaMetadata.creationTime)
               fs.utimesSync(filePath, fileDate, fileDate)
-              log("Download of " + item.filename + " completed")
+              logger.log("Download of " + item.filename + " completed")
             })
           } else {
-            log("Download of " + item.filename + " completed (not saved - dry run!)")
+            logger.log("Download of " + item.filename + " completed (not saved - dry run!)")
           }
         })
       } else {
-        log(`File ${item.filename} already exists`)
+        logger.log(`File ${item.filename} already exists`)
       }
     })
     nextPageToken = searchListing.nextPageToken
